@@ -44,6 +44,13 @@ public class InputCheck : MonoBehaviour {
 	// Use this for initialization.
 	/// </summary>
 	IEnumerator Start() {
+
+		// sleepOff
+		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
+		// Timmer set
+		startTime = Time.time;
+
 		//フォント生成
 		this._labelStyle = new GUIStyle();
 		this._labelStyle.fontSize = Screen.height / 22;
@@ -114,6 +121,29 @@ public class InputCheck : MonoBehaviour {
 			// 前回情報の更新
 			_latitudePrev = _latitude;
 			_longitudePrev = _longitude;
+
+
+			if(startTime - Time.time % 5 == 0){
+
+				string url = "http://www.snowwhite.hokkaido.jp/niseko/api";
+				WWWForm form = new WWWForm();
+				form.AddField("lon", "fuga");
+				form.AddField("lat", "bar");
+				form.AddField("alt", "fuga");
+				form.AddField("acc", "bar");
+				form.AddField("speed", "fuga");
+				form.AddField("provider", "bar");
+				form.AddField("gps_status", "fuga");
+				form.AddField("r_datetime", "bar");
+				form.AddField("mobile_location_id", "fuga");
+				form.AddField("u_id", "bar");
+				WWW www = new WWW(url, form);
+				yield return www;
+				if (www.error == null) {
+					Debug.Log(www.text);
+				}
+
+			}
 		}
 	}
 
