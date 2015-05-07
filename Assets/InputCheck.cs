@@ -33,6 +33,9 @@ public class InputCheck : MonoBehaviour {
 	/// <summary>前回と今回の距離</summary>
 	private float _distance;
 
+	/// <summary></summary>
+	private float time = 0.0f;
+
 	/// <summary>位置情報の取得精度</summary>
 	private static readonly float DESIRED_ACCURACY_IN_METERS = 5.0f;
 	/// <summary>位置情報の更新間隔</summary>
@@ -47,9 +50,6 @@ public class InputCheck : MonoBehaviour {
 
 		// sleepOff
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
-
-		// Timmer set
-		startTime = Time.time;
 
 		//フォント生成
 		this._labelStyle = new GUIStyle();
@@ -67,6 +67,7 @@ public class InputCheck : MonoBehaviour {
 
 		// 位置情報サービスの初期化
 		StartWait();
+
 
 		// 継続して位置情報を取得したいのでＳＴＯＰしない
 		// Input.location.Stop();
@@ -122,29 +123,38 @@ public class InputCheck : MonoBehaviour {
 			_latitudePrev = _latitude;
 			_longitudePrev = _longitude;
 
-
-			if(startTime - Time.time % 5 == 0){
-
-				string url = "http://www.snowwhite.hokkaido.jp/niseko/api";
-				WWWForm form = new WWWForm();
-				form.AddField("lon", "fuga");
-				form.AddField("lat", "bar");
-				form.AddField("alt", "fuga");
-				form.AddField("acc", "bar");
-				form.AddField("speed", "fuga");
-				form.AddField("provider", "bar");
-				form.AddField("gps_status", "fuga");
-				form.AddField("r_datetime", "bar");
-				form.AddField("mobile_location_id", "fuga");
-				form.AddField("u_id", "bar");
-				WWW www = new WWW(url, form);
-				yield return www;
-				if (www.error == null) {
-					Debug.Log(www.text);
-				}
-
-			}
 		}
+
+		time = time + Time.deltaTime;
+		if (time >= 5.0f) {
+			time = 0.0f;
+			StartCoroutine (TransPortData ());
+		}
+
+	}
+
+	IEnumerator TransPortData(){
+
+		Debug.Log ("start transport");
+
+		string url = "http://www.snowwhite.hokkaido.jp/niseko/api/set/locationlog";
+		WWWForm form = new WWWForm();
+		form.AddField("lon", this._longitude.ToString());
+		form.AddField("lat", this._latitude.ToString());
+		form.AddField("alt", this._altitude.ToString());
+		form.AddField("acc", Input.location.lastData.horizontalAccuracy.ToString());
+		form.AddField("speed", this._distance.ToString());
+		form.AddField("provider", "hoge");
+		form.AddField("gps_status", "fuga");
+		form.AddField("r_datetime", Input.location.lastData.timestamp.ToString());
+		form.AddField("mobile_location_id", "fuga");
+		form.AddField("u_id", "1");
+		var www = new WWW(url, form);
+		yield return www;
+		if (www.error == null) {
+			Debug.Log(www.text);
+		}
+
 	}
 
 	/// <summary>
