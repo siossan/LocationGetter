@@ -44,9 +44,11 @@ public class InputCheck : MonoBehaviour {
 	/// <summary>経緯度の丸め位置</summary>
 	private static readonly int LOCATION_SCALE = 10;
 
-	private InputField NameInputField;
-	private InputField SexInputField;
-	private InputField AgeInputField;
+	private InputField nameInputField;
+	private InputField sexInputField;
+	private InputField ageInputField;
+
+	private int sendCount = 0;
 
 	/// <summary>
 	// Use this for initialization.
@@ -133,38 +135,41 @@ public class InputCheck : MonoBehaviour {
 		time = time + Time.deltaTime;
 		if (time >= 5.0f) {
 			time = 0.0f;
-			StartCoroutine (TransPortData ());
+			StartCoroutine(TransPortData());
 		}
 
 	}
 
-	IEnumerator TransPortData(){
+	IEnumerator TransPortData() {
 
-		Debug.Log ("start transport");
+		Debug.Log("start transport");
+
 
 		// テキスト情報取得
-		NameInputField = GetComponent<InputField>();
-		String text = NameInputField.text;
+		nameInputField = GameObject.Find("NameInputField").GetComponent<InputField>();
+		sexInputField = GameObject.Find("SexInputField").GetComponent<InputField>();
+		ageInputField = GameObject.Find("AgeInputField").GetComponent<InputField>();
 
-		Debug.Log(text);
 
 		string url = "http://www.snowwhite.hokkaido.jp/niseko/api/set/locationlog";
 		WWWForm form = new WWWForm();
-		form.AddField("lon", System.Math.Round(this._longitude,LOCATION_SCALE).ToString());
+		form.AddField("lon", System.Math.Round(this._longitude, LOCATION_SCALE).ToString());
 		form.AddField("lat", System.Math.Round(this._latitude, LOCATION_SCALE).ToString());
 		form.AddField("alt", System.Math.Round(this._altitude, LOCATION_SCALE).ToString());
 		form.AddField("acc", Input.location.lastData.horizontalAccuracy.ToString());
 		form.AddField("speed", this._distance.ToString());
-		form.AddField("provider", "hoge");
+		form.AddField("provider", nameInputField.text + "," + sexInputField.text + "," + ageInputField.text);
 		form.AddField("gps_status", "fuga");
 		form.AddField("r_datetime", Input.location.lastData.timestamp.ToString());
-		form.AddField("mobile_location_id", "fuga");
-		form.AddField("u_id", "2");
+		form.AddField("mobile_location_id", sendCount);
+		form.AddField("u_id", SystemInfo.deviceUniqueIdentifier);
 		var www = new WWW(url, form);
 		yield return www;
 		if (www.error == null) {
 			Debug.Log(www.text);
 		}
+
+		sendCount = sendCount + 1;
 
 	}
 
