@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System;
 
@@ -42,6 +43,10 @@ public class InputCheck : MonoBehaviour {
 	private static readonly float UPDATE_DISTANCE_IN_METERS = 1.0f;
 	/// <summary>経緯度の丸め位置</summary>
 	private static readonly int LOCATION_SCALE = 10;
+
+	private InputField NameInputField;
+	private InputField SexInputField;
+	private InputField AgeInputField;
 
 	/// <summary>
 	// Use this for initialization.
@@ -137,18 +142,24 @@ public class InputCheck : MonoBehaviour {
 
 		Debug.Log ("start transport");
 
+		// テキスト情報取得
+		NameInputField = GetComponent<InputField>();
+		String text = NameInputField.text;
+
+		Debug.Log(text);
+
 		string url = "http://www.snowwhite.hokkaido.jp/niseko/api/set/locationlog";
 		WWWForm form = new WWWForm();
-		form.AddField("lon", this._longitude.ToString());
-		form.AddField("lat", this._latitude.ToString());
-		form.AddField("alt", this._altitude.ToString());
+		form.AddField("lon", System.Math.Round(this._longitude,LOCATION_SCALE).ToString());
+		form.AddField("lat", System.Math.Round(this._latitude, LOCATION_SCALE).ToString());
+		form.AddField("alt", System.Math.Round(this._altitude, LOCATION_SCALE).ToString());
 		form.AddField("acc", Input.location.lastData.horizontalAccuracy.ToString());
 		form.AddField("speed", this._distance.ToString());
 		form.AddField("provider", "hoge");
 		form.AddField("gps_status", "fuga");
 		form.AddField("r_datetime", Input.location.lastData.timestamp.ToString());
 		form.AddField("mobile_location_id", "fuga");
-		form.AddField("u_id", "1");
+		form.AddField("u_id", "2");
 		var www = new WWW(url, form);
 		yield return www;
 		if (www.error == null) {
