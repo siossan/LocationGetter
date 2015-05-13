@@ -143,10 +143,10 @@ public class InputCheck : MonoBehaviour {
 		Debug.Log ("start transport");
 
 		// テキスト情報取得
-		InputField[] i = GetComponents<InputField>();
-		for (int k = 0; k < i.Length; k++ ) {
-			Debug.Log(i[k].text);
-		};
+		NameInputField = GetComponent<InputField>();
+		String text = NameInputField.text;
+
+		Debug.Log(text);
 
 		string url = "http://www.snowwhite.hokkaido.jp/niseko/api/set/locationlog";
 		WWWForm form = new WWWForm();
