@@ -144,34 +144,30 @@ public class InputCheck : MonoBehaviour {
 
 		Debug.Log("start transport");
 
-
-		// テキスト情報取得
-		nameInputField = GameObject.Find("NameInputField").GetComponent<InputField>();
-		if (nameInputField == null || nameInputField.text.Length == 0) {
-			nameInputField.text = "null";
-		};
-		sexInputField = GameObject.Find("SexInputField").GetComponent<InputField>();
-		if (sexInputField == null || sexInputField.text.Length == 0) {
-			sexInputField.text = "null";
-		};
-		ageInputField = GameObject.Find("AgeInputField").GetComponent<InputField>();
-		if (ageInputField == null || ageInputField.text.Length == 0) {
-			ageInputField.text = "null";
-		};
-
-
 		string url = "http://www.snowwhite.hokkaido.jp/niseko/api/set/locationlog";
 		WWWForm form = new WWWForm();
-		form.AddField("lon", System.Math.Round(this._longitude, LOCATION_SCALE).ToString());
-		form.AddField("lat", System.Math.Round(this._latitude, LOCATION_SCALE).ToString());
-		form.AddField("alt", System.Math.Round(this._altitude, LOCATION_SCALE).ToString());
-		form.AddField("acc", Input.location.lastData.horizontalAccuracy.ToString());
-		form.AddField("speed", this._distance.ToString());
-		form.AddField("provider", nameInputField.text + "," + sexInputField.text + "," + ageInputField.text);
-		form.AddField("gps_status", "fuga");
-		form.AddField("r_datetime", Input.location.lastData.timestamp.ToString());
-		form.AddField("mobile_location_id", sendCount);
-		form.AddField("u_id", SystemInfo.deviceUniqueIdentifier);
+
+		try {
+			// テキスト情報取得
+			nameInputField = GameObject.Find("NameInputField").GetComponent<InputField>();
+			sexInputField = GameObject.Find("SexInputField").GetComponent<InputField>();
+			ageInputField = GameObject.Find("AgeInputField").GetComponent<InputField>();
+
+			form.AddField("lon", System.Math.Round(this._longitude, LOCATION_SCALE).ToString());
+			form.AddField("lat", System.Math.Round(this._latitude, LOCATION_SCALE).ToString());
+			form.AddField("alt", System.Math.Round(this._altitude, LOCATION_SCALE).ToString());
+			form.AddField("acc", Input.location.lastData.horizontalAccuracy.ToString());
+			form.AddField("speed", this._distance.ToString());
+			form.AddField("provider", nameInputField.text + "," + sexInputField.text + "," + ageInputField.text);
+			form.AddField("gps_status", "fuga");
+			form.AddField("r_datetime", Input.location.lastData.timestamp.ToString());
+			form.AddField("mobile_location_id", sendCount);
+			form.AddField("u_id", SystemInfo.deviceUniqueIdentifier);
+
+		} catch(Exception e) {
+			Debug.Log(e.StackTrace);
+		}
+
 		var www = new WWW(url, form);
 		yield return www;
 		if (www.error == null) {
@@ -179,6 +175,7 @@ public class InputCheck : MonoBehaviour {
 		}
 
 		sendCount = sendCount + 1;
+
 
 	}
 
