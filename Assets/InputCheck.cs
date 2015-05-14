@@ -233,6 +233,9 @@ public class InputCheck : MonoBehaviour {
 						}
 						text = string.Format("移動距離:{0}m", System.Math.Round(dispDistance, LOCATION_SCALE));
 						break;
+					case 8:
+						text = string.Format("端末ID:{0}m", SystemInfo.deviceUniqueIdentifier);
+						break;
 					default:
 						throw new System.InvalidOperationException();
 				}
