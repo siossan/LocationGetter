@@ -188,7 +188,7 @@ public class InputCheck : MonoBehaviour {
 			float w = Screen.width * 8 / 10;
 			float h = Screen.height / 20;
 
-			for (int i = 0; i < 8; i++) {
+			for (int i = 0; i < 9; i++) {
 				y = Screen.height / 10 + h * i;
 				string text = string.Empty;
 
