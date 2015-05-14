@@ -44,9 +44,9 @@ public class InputCheck : MonoBehaviour {
 	/// <summary>経緯度の丸め位置</summary>
 	private static readonly int LOCATION_SCALE = 10;
 
-	private InputField nameInputField;
-	private InputField sexInputField;
-	private InputField ageInputField;
+	private static InputField nameInputField;
+	private static InputField sexInputField;
+	private static InputField ageInputField;
 
 	private int sendCount = 0;
 
@@ -147,8 +147,17 @@ public class InputCheck : MonoBehaviour {
 
 		// テキスト情報取得
 		nameInputField = GameObject.Find("NameInputField").GetComponent<InputField>();
+		if (nameInputField == null || nameInputField.text.Length == 0) {
+			nameInputField.text = "null";
+		};
 		sexInputField = GameObject.Find("SexInputField").GetComponent<InputField>();
+		if (sexInputField == null || sexInputField.text.Length == 0) {
+			sexInputField.text = "null";
+		};
 		ageInputField = GameObject.Find("AgeInputField").GetComponent<InputField>();
+		if (ageInputField == null || ageInputField.text.Length == 0) {
+			ageInputField.text = "null";
+		};
 
 
 		string url = "http://www.snowwhite.hokkaido.jp/niseko/api/set/locationlog";
