@@ -34,6 +34,8 @@ public class InputCheck : MonoBehaviour {
 	/// <summary>前回と今回の距離</summary>
 	private float _distance;
 
+	private bool _mode = false;
+
 	/// <summary></summary>
 	private float time = 0.0f;
 
@@ -49,6 +51,13 @@ public class InputCheck : MonoBehaviour {
 	private static InputField ageInputField;
 
 	private int sendCount = 0;
+
+	Toggle toggle;
+	Button btn;
+	Image image;
+
+	public Sprite modeOnImage;
+	public Sprite modeOffImage;
 
 	/// <summary>
 	// Use this for initialization.
@@ -74,7 +83,6 @@ public class InputCheck : MonoBehaviour {
 
 		// 位置情報サービスの初期化
 		StartWait();
-
 
 		// 継続して位置情報を取得したいのでＳＴＯＰしない
 		// Input.location.Stop();
@@ -167,6 +175,10 @@ public class InputCheck : MonoBehaviour {
 			form.AddField("u_id", SystemInfo.deviceUniqueIdentifier);
 
 
+			toggle = GameObject.Find("Toggle").GetComponent<Toggle>();
+		form.AddField("mode", toggle.isOn.ToString());
+
+
 		var www = new WWW(url, form);
 		yield return www;
 		if (www.error == null) {
@@ -217,7 +229,7 @@ public class InputCheck : MonoBehaviour {
 						if (_isGetLocation) {
 							dispLongitude = this._longitude;
 						}
-						text = string.Format("緯度:{0}", System.Math.Round(dispLongitude, LOCATION_SCALE));
+						text = string.Format("経度:{0}", System.Math.Round(dispLongitude, LOCATION_SCALE));
 						break;
 					case 6://longitude
 						float dispAltitude = 0;
@@ -235,7 +247,15 @@ public class InputCheck : MonoBehaviour {
 						break;
 					case 8:
 						text = string.Format("端末ID:{0}m", SystemInfo.deviceUniqueIdentifier);
+					break;
+/*					case 9:
+						string strmode = "停止中";
+						if(_mode){
+							strmode = "送信中";
+						}
+						text = string.Format("送信状況:{0}", strmode);
 						break;
+						*/
 					default:
 						throw new System.InvalidOperationException();
 				}
@@ -276,5 +296,27 @@ public class InputCheck : MonoBehaviour {
 	/// <returns></returns>
 	private static double deg2rad(double deg) {
 		return (deg / 180) * Math.PI;
+	}
+
+	public void ChangeToggle ()
+	{
+
+		btn = GetComponent<Button>();
+		toggle = GameObject.Find("Toggle").GetComponent<Toggle>();
+
+		if (toggle.isOn != true) {
+//			image = GameObject.Find("image").GetComponent<Image>();
+//			image.sprite = modeOffImage;
+			Text txt = GameObject.Find("Text").GetComponent<Text>();
+			txt.text = "停止中";
+			Debug.Log (toggle.isOn.ToString());
+		} else {
+//			image = GameObject.Find("image").GetComponent<Image>();
+//			image.sprite = modeOnImage;
+			Text txt = GameObject.Find("Text").GetComponent<Text>();
+			txt.text = "起動中";
+			Debug.Log(toggle.isOn.ToString());
+		}
+
 	}
 }
