@@ -301,7 +301,8 @@ public class InputCheck : MonoBehaviour {
 	public void ChangeToggle ()
 	{
 
-		btn = GetComponent<Button>();
+		btn = GameObject.Find("Button").GetComponent<Button>();
+		ColorBlock cbBtn = btn.colors;
 		toggle = GameObject.Find("Toggle").GetComponent<Toggle>();
 
 		if (toggle.isOn != true) {
@@ -309,12 +310,16 @@ public class InputCheck : MonoBehaviour {
 //			image.sprite = modeOffImage;
 			Text txt = GameObject.Find("Text").GetComponent<Text>();
 			txt.text = "停止中";
+			cbBtn.normalColor = new Color (157,157,157,255);
+			btn.colors = cbBtn;
 			Debug.Log (toggle.isOn.ToString());
 		} else {
 //			image = GameObject.Find("image").GetComponent<Image>();
 //			image.sprite = modeOnImage;
 			Text txt = GameObject.Find("Text").GetComponent<Text>();
 			txt.text = "起動中";
+			cbBtn.normalColor = new Color (189,0,0,255);
+			btn.colors = cbBtn;
 			Debug.Log(toggle.isOn.ToString());
 		}
 
